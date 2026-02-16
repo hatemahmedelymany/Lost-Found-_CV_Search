@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pillow
+pymysql
+python-multipart
+scikit-learn
+opencv-python-headless
+numpy==1.26.4
+langdetect
+deep-translator
+textblob
+torch==1.13.1
+torchvision==0.14.1
+# git+https://github.com/mlfoundations/open_clip.git
+open_clip_torch

@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mariadb:10.4
+    container_name: lostfound_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: lostfound
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./lostfound.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    container_name: lostfound_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: lostfound
+      BASE_URL: http://localhost:8000
+      UPLOAD_DIR: uploads
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+
+volumes:
+  db_data:
